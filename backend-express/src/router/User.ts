@@ -2,18 +2,49 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 const router = express.Router();
 const prisma = new PrismaClient()
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Create a new user
-router.post('/create', async (req, res) => {
+//@ts-ignore
+router.patch('/', async (req, res) => {
   const { email, username, password } = req.body;
-  console.log("create route run",req.body);
+
+  // Validate the request body
+  if (!email || !username || !password) {
+    return res.status(400).json({ error: 'Email, username, and password are required.' });
+  }
+
   try {
-    const user = await prisma.user.create({
-      data: { email, username, password },
+    // Check if the email or username already exists
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { username }],
+      },
     });
-    res.status(201).json(user);
+
+    if (existingUser) {
+      return res.status(409).json({ error: 'Email or username already in use.' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the user
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        username,
+        password: hashedPassword, // Store the hashed password
+      },
+    });
+
+    res.status(201).json({ message: 'User created successfully', user: newUser });
   } catch (error) {
-    res.status(400).json({ error: "Failed to create user", details: error });
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -31,19 +62,28 @@ router.get("/", async (req, res) => {
 
 // Get a single user by ID
 // @ts-ignore
-router.get("/login", async (req, res) => {
-  
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
   try {
+    // Check if user exists
     const user = await prisma.user.findUnique({
-      where: { id: Number(id) },
-      include: { todos: true },
+      where: { username }
     });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    //Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid Password" });
+    }
+    //Generate JWT token
+    const token = jwt.sign({ userId: user.id },process.env.TOKEN_JWT_SECRET as string, { expiresIn: "1h" });
 
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    res.status(200).json(user);
+    res.status(200).json({ message: "Login successful",user  });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user" });
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

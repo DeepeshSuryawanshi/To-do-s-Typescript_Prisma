@@ -37,6 +37,7 @@ router.post("/add", async (req, res) => {
   });
   
   // Get a single todo by ID
+  //@ts-ignore
   router.get("/todos/:id", async (req, res) => {
     const { id } = req.params;
   
