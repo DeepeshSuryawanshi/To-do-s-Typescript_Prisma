@@ -1,18 +1,27 @@
-import React,{useState} from 'react'
+import {useState} from 'react'
 import { Link } from 'react-router-dom';
 import { userIcon,loginUser, cloesEyeIcon , eyeIcon } from '../assets';
 import api from '../config/axios.config';
+import { toast  } from 'sonner';
+
 function Login() {
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
     const [showPassword,setShowPassword] = useState(false)
     async function Login() {
-        let status = await api.post('user/login',{username,password});
-        if (status) {
-            alert("userlogin sucessfull");
-        }
-        else{
-            alert("something went wrong");
+        try {
+            let status = await api.post('user/login',{username,password});
+            if (status) {
+                toast.success('login Sucess..')
+            }
+            else{
+                toast.error("User login Failed")
+            }
+        } catch (error) {
+            //@ts-ignore
+            toast.error("Login faile "+ error?.response.data.message)
+            setUsername("")
+            setPassword("");
         }
     }
   return (

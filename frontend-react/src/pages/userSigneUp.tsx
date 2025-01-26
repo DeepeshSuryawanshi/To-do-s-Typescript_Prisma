@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { userIcon,loginUser, cloesEyeIcon , eyeIcon } from '../assets';
 import api from '../config/axios.config';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 function SigneUp() {
     const [username,setUsername] = useState('');
@@ -14,10 +15,11 @@ function SigneUp() {
     async function Login() {
         let status = await api.patch('user/',{username,email,password});
         if (status) {
+            toast.success("User Signe-up Sucessfull")
             navigate('/login');
         }
         else{
-            alert("something went wrong");
+            toast.error("User not register")
         }
     }
   return (
