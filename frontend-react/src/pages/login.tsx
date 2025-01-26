@@ -1,0 +1,66 @@
+import React,{useState} from 'react'
+import { Link } from 'react-router-dom';
+import { userIcon,loginUser, cloesEyeIcon , eyeIcon } from '../assets';
+import api from '../config/axios.config';
+function Login() {
+    const [username,setUsername] = useState('');
+    const [password,setPassword] = useState('');
+    const [showPassword,setShowPassword] = useState(false)
+    async function Login() {
+        let status = await api.post('user/login',{username,password});
+        if (status) {
+            alert("userlogin sucessfull");
+        }
+        else{
+            alert("something went wrong");
+        }
+    }
+  return (
+    <div className='bg-[url(https://img.freepik.com/free-vector/flat-design-people-business-training-illustrated_23-2148909671.jpg?t=st=1737824171~exp=1737827771~hmac=0f94c982928d70f8b428fbf1a3b684e27e590bc66294a0479879bea7c11c0214&w=996)] h-screen flex w-full justify-center items-center'>
+        <div className='flex flex-col items-center bg-blue-100 px-7 py-6 rounded '>
+            <div className='flex items-center text-center'>
+                <h1 className='text-2xl font-semibold flex gap-2'> <img src={userIcon} alt="user icon" /> User Login </h1>
+            </div>
+            <div title='Login form' className=''>
+                <div className='py-1' >
+                    <div>
+                        <label htmlFor="Username">Username</label>
+                        <div className='flex gap-1 py-2 px-1.5 rounded-md border-2 bg-white border-blue-700'>
+                            <img src={loginUser} alt="user icon" />
+                            <input  type="text" 
+                            value={username} 
+                            onChange={(e)=>setUsername(e.target.value)} 
+                            placeholder='Enter Username' 
+                            className='outline-none w-full' />
+                        </div>
+                    </div>
+                </div>     
+                <div className='py-1'>
+                     <div>
+                        <label htmlFor="Username">Password</label>
+                        <div className='flex gap-1 py-2 px-1.5 rounded-md border-2 bg-white border-blue-700'>
+                            <img src={showPassword? eyeIcon :cloesEyeIcon} alt="user icon" onClick={()=>setShowPassword(!showPassword)} />
+                            <input  
+                            type={showPassword?"text":"password"}
+                            value={password} 
+                            onChange={(e)=>setPassword(e.target.value)} 
+                            placeholder='Enter Username' 
+                            className='outline-none w-full' />
+                        </div>
+                    </div>
+                </div>
+                <div className='py-0.5'>
+                    <Link to={'/sign-up'} className='text-[10px] text-blue-600 underline '>Create an Account.</Link>
+                    <button type="button"
+                    onClick={()=>Login()} 
+                    className='flex items-center justify-center text-white p-1 rounded-md w-full bg-blue-700 hover:bg-blue-800 transition delay-150 duration-300 ease-in-out'>
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default Login
