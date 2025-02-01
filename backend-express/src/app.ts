@@ -8,8 +8,6 @@ import cors from 'cors';
 import logger from 'morgan';
 import path from 'path';
 import createError from 'http-errors'
-//@ts-ignore
-import prisma from ".././prisma";
 
 // routes import 
 import userRoutes from './router/User';

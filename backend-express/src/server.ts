@@ -1,7 +1,8 @@
-require('dotenv').config();
+// require('dotenv').config();
+import env from './config/env.ts';
 import app from './app.ts'
 import http from 'http';
 const server = http.createServer(app);
-server.listen(process.env.PORT,()=>{
+server.listen(env.PORT,()=>{
     console.log("server is running on Port 5000");
 })

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import {useState} from 'react'
 import { Link } from 'react-router-dom';
 import { userIcon,loginUser, cloesEyeIcon , eyeIcon } from '../assets';
 import api from '../config/axios.config';
