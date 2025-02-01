@@ -1,8 +1,12 @@
-import React from 'react'
+import React from 'react';
+import { Header, SideNav } from '../components';
+
 
 function Dashboard() {
   return (
-    <div>Dashboard</div>
+    <div className='w-full h-screen'>
+        <Header/>
+    </div>  
   )
 }
 
