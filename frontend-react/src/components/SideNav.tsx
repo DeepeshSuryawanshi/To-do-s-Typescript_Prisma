@@ -1,7 +1,10 @@
 import React from 'react'
 
-export const SideNav = () => {
+export const SideNav = ({show}:{show:boolean}) => {
+
   return (
-    <div>sSideNav</div>
+    <div className={`${show? 'flex' : 'hidden'}`} >
+      SideNav
+    </div>
   )
 }
